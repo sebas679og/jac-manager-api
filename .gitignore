@@ -34,3 +34,6 @@ build/
 
 ### Env ###
 .env
+
+### Persistent Data ###
+jac-data/
