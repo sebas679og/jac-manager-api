@@ -10,9 +10,13 @@
 	</parent>
 	<groupId>com.api.manager</groupId>
 	<artifactId>jac</artifactId>
-	<version>0.0.1-</version>
+	<version>0.0.1</version>
 	<name>jac-manager-api</name>
-	<description/>
+    <description>
+        RESTFUL API for managing Juntas de Acción Comunal (JAC) — Colombian community organizations.
+        Provides comprehensive management of members, affiliations, treasury operations,
+        and community governance processes through a reactive, secure, and scalable architecture.
+    </description>
 	<url/>
 	<licenses>
 		<license/>
