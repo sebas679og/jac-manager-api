@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  * Test class for the Jac application context. This test ensures that the Spring application context
  * loads successfully.
  */
-@SpringBootTest
 public class JacApplicationTests extends AbstractIntegrationTest {
 
   @Test
