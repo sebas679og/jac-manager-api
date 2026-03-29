@@ -29,7 +29,8 @@ jobs:
       - name: Get version from pom.xml
         id: vars
         run: |
-          VERSION=$(grep -m1 '<version>' pom.xml | sed 's/[[:space:]]*<[^>]*>//g')
+          chmod +x mvnw 2>/dev/null || true
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout 2>/dev/null)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Detected version: $VERSION"
 
