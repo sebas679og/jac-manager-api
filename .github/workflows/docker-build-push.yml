@@ -28,7 +28,10 @@ jobs:
 
       - name: Get version from pom.xml
         id: vars
-        run: echo "version=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(grep -m1 '<version>' pom.xml | sed 's/[[:space:]]*<[^>]*>//g')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
 
       - name: Build & push jac-manager-api
         uses: docker/build-push-action@v6
