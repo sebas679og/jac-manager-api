@@ -1,12 +1,11 @@
 package com.api.manager.jac;
 
-import org.springframework.boot.r2dbc.autoconfigure.R2dbcConnectionDetails;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
@@ -25,6 +24,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
         })
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class AbstractIntegrationTest {
 
   @ServiceConnection
