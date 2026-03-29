@@ -14,14 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * database interactions.
  */
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.r2dbc.url=r2dbc:postgresql://localhost:5432/test",
-                "spring.r2dbc.username=test",
-                "spring.r2dbc.password=test",
-                "spring.r2dbc.pool.enabled=false",
-                "spring.config.import="
-        })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.properties")
