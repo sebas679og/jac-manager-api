@@ -27,6 +27,7 @@ services:
       JAC_DATASOURCE_URL: r2dbc:postgresql://postgres-jac:5432/${JAC_DATASOURCE_DATABASE}
       JAC_DATASOURCE_USERNAME: ${JAC_DATASOURCE_USERNAME}
       JAC_DATASOURCE_PASSWORD: ${JAC_DATASOURCE_PASSWORD}
+      JAC_LEVEL_LOGIN: ${JAC_LEVEL_LOGIN}
     restart: on-failure
     networks:
       - jac-network
