@@ -216,7 +216,7 @@ docker compose up -d postgres-jac
 ./mvnw test
 
 # Run tests and generate JaCoCo coverage report
-./mvnw -B clean verify
+./mvnw clean test jacoco:report
 
 # Open coverage report
 # target/site/jacoco/index.html
@@ -314,7 +314,7 @@ public class JacApplication {
 ./mvnw spotless:check checkstyle:check pmd:check
 
 # 3. Run tests
-./mvnw test
+./mvnw clean test
 
 # 4. If everything passes — commit and push
 git add .

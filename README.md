@@ -128,10 +128,10 @@ There is no need to start any service manually; Testcontainers handles the datab
 
 ```bash
 # Run all tests
-./mvnw test
+./mvnw clean test
 
 # Run tests and generate coverage report
-./mvnw -B clean verify
+./mvnw clean test jacoco:report
 
 # Coverage report will be available at:
 # target/site/jacoco/index.html
