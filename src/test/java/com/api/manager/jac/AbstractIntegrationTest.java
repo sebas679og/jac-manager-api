@@ -4,7 +4,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -14,10 +13,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * database interactions.
  */
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {
+                "spring.r2dbc.url=r2dbc:postgresql://localhost:5432/test",
+                "spring.r2dbc.username=test",
+                "spring.r2dbc.password=test",
+                "spring.r2dbc.pool.enabled=false",
+                "spring.config.import="
+        })
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.properties")
 public class AbstractIntegrationTest {
 
   @ServiceConnection
