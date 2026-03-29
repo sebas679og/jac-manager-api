@@ -48,9 +48,11 @@ USER jac
 # -XX:+ZGenerational    → ZGC generacional (disponible desde Java 21, default en 25)
 # -Xss256k              → stack más pequeño por hilo (WebFlux usa pocos hilos)
 # -XX:MaxRAMPercentage  → límite de heap relativo al RAM del contenedor
+# --enable-native-access=ALL-UNNAMED → acceso a métodos "nativos" del sistema, librerías legacy
 ENTRYPOINT ["java", \
   "-XX:+UseZGC", \
   "-XX:+ZGenerational", \
   "-Xss256k", \
   "-XX:MaxRAMPercentage=75.0", \
+  "--enable-native-access=ALL-UNNAMED", \
   "-jar", "app.jar"]
