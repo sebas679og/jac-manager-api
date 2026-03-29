@@ -1,0 +1,95 @@
+# ──────────────────────────────────────────────
+# Build tools y wrappers de Maven / Gradle
+# ──────────────────────────────────────────────
+target/
+!target/*.jar
+build/
+.gradle/
+gradle/wrapper/gradle-wrapper.jar
+gradlew.bat
+mvnw.cmd
+
+# ──────────────────────────────────────────────
+# IDEs y editores
+# ──────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.code-workspace
+.eclipse/
+*.classpath
+*.project
+.settings/
+*.sts4-cache
+*.factorypath
+
+# ──────────────────────────────────────────────
+# Sistema operativo
+# ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ──────────────────────────────────────────────
+# Control de versiones
+# ──────────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ──────────────────────────────────────────────
+# Logs y archivos temporales
+# ──────────────────────────────────────────────
+*.log
+logs/
+*.tmp
+*.swp
+*.bak
+
+# ──────────────────────────────────────────────
+# Configuraciones sensibles / secretos
+# ──────────────────────────────────────────────
+src/main/resources/application-local.yml
+src/main/resources/application-local.properties
+src/main/resources/application-secret*.yml
+**/.env
+**/.env.*
+**/secrets/
+
+# ──────────────────────────────────────────────
+# Tests (no van en la imagen de producción)
+# ──────────────────────────────────────────────
+src/test/
+
+# ──────────────────────────────────────────────
+# Docker (evitar recursión)
+# ──────────────────────────────────────────────
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ──────────────────────────────────────────────
+# CI / CD y herramientas de devops
+# ──────────────────────────────────────────────
+.github/
+.gitlab-ci.yml
+.circleci/
+Jenkinsfile
+.terraform/
+*.tfstate
+*.tfvars
+
+# ──────────────────────────────────────────────
+# Documentación
+# ──────────────────────────────────────────────
+README.md
+CHANGELOG.md
+HELP.md
+docs/
+
+# ──────────────────────────────────────────────
+# Data Persistence
+# ──────────────────────────────────────────────
+jac-data/

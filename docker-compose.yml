@@ -1,0 +1,37 @@
+name: jac-system
+
+services:
+  postgres-jac:
+    image: postgres:17.8
+    environment:
+      POSTGRES_USER: ${JAC_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${JAC_DATASOURCE_PASSWORD}
+      POSTGRES_DB: ${JAC_DATASOURCE_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./jac-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - jac-network
+
+  jac-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-jac
+    environment:
+      JAC_DATASOURCE_URL: r2dbc:postgresql://postgres-jac:5432/${JAC_DATASOURCE_DATABASE}
+      JAC_DATASOURCE_USERNAME: ${JAC_DATASOURCE_USERNAME}
+      JAC_DATASOURCE_PASSWORD: ${JAC_DATASOURCE_PASSWORD}
+      JAC_LEVEL_LOGIN: ${JAC_LEVEL_LOGIN}
+    restart: on-failure
+    networks:
+      - jac-network
+
+networks:
+  jac-network:
+    driver: bridge
