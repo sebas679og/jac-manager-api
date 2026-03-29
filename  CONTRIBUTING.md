@@ -216,7 +216,7 @@ docker compose up -d postgres-jac
 ./mvnw test
 
 # Run tests and generate JaCoCo coverage report
-./mvnw clean test jacoco:report
+./mvnw -B clean verify
 
 # Open coverage report
 # target/site/jacoco/index.html

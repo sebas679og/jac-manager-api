@@ -127,6 +127,10 @@
             <version>0.2.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-pool</artifactId>
+        </dependency>
 	</dependencies>
 
     <build>
@@ -175,14 +179,12 @@
                     </excludes>
                 </configuration>
                 <executions>
-
                     <execution>
                         <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-
                     <execution>
                         <id>report</id>
                         <phase>verify</phase>
@@ -190,7 +192,6 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-
                     <execution>
                         <id>check</id>
                         <phase>verify</phase>

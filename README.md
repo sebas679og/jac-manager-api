@@ -131,7 +131,7 @@ There is no need to start any service manually; Testcontainers handles the datab
 ./mvnw clean test
 
 # Run tests and generate coverage report
-./mvnw clean test jacoco:report
+./mvnw -B clean verify
 
 # Coverage report will be available at:
 # target/site/jacoco/index.html
