@@ -15,7 +15,7 @@
 
     <groupId>com.api.manager</groupId>
     <artifactId>jac</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.1</version>
     <name>jac-manager-api</name>
     <description>
         RESTful API for managing Juntas de Acción Comunal (JAC) — Colombian community organizations.
