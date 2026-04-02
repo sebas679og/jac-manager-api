@@ -256,7 +256,12 @@
                     <configLocation>google_checks.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
+                    <violationSeverity>warning</violationSeverity>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <excludes>**/generated-sources/**/*,**/generated/**/*</excludes>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
                 </configuration>
                 <executions>
                     <execution>
@@ -272,7 +277,7 @@
                 <version>3.28.0</version>
                 <configuration>
                     <rulesets>
-                        <ruleset>/rulesets/java/quickstart.xml</ruleset>
+                        <ruleset>${basedir}/config/pmd/custom-ruleset.xml</ruleset>
                     </rulesets>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
