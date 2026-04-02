@@ -9,6 +9,7 @@
 ## Table of Contents
 
 - [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Environment Configuration](#environment-configuration)
@@ -35,6 +36,96 @@
 | Boilerplate | Lombok 1.18.44 |
 | Build Tool | Maven 3.9.14 |
 | Containerization | Docker + Docker Compose |
+
+---
+
+## Architecture
+
+The project adopts a **Modular MVC architecture**. Each feature or domain is a self-contained
+module with its own internal MVC layer structure. This keeps concerns isolated per domain
+and makes each module independently navigable and maintainable.
+
+### Project structure
+
+```
+src/
+└── main/
+    └── java/
+        └── com/api/manager/jac/
+            │
+            ├── users/                        # Users module
+            │   ├── controllers/
+            │   │   └── UserController.java
+            │   ├── services/
+            │   │   ├── UserService.java
+            │   │   └── UserServiceImpl.java
+            │   ├── repositories/
+            │   │   └── UserRepository.java
+            │   ├── models/
+            │   │   └── User.java
+            │   ├── dtos/
+            │   │   ├── UserRequestDto.java
+            │   │   └── UserResponseDto.java
+            │   ├── mappers/
+            │   │   └── UserMapper.java
+            │   ├── exceptions/
+            │   │   └── UserNotFoundException.java
+            │   ├── utils/
+            │   │   └── UserUtils.java
+            │   └── configs/
+            │       └── UserConfig.java
+            │
+            ├── affiliations/                 # Affiliations module
+            │   ├── controllers/
+            │   ├── services/
+            │   ├── repositories/
+            │   ├── models/
+            │   ├── dtos/
+            │   ├── mappers/
+            │   ├── exceptions/
+            │   ├── utils/
+            │   └── configs/
+            │
+            ├── treasury/                     # Treasury module
+            │   ├── controllers/
+            │   ├── services/
+            │   ├── repositories/
+            │   ├── models/
+            │   ├── dtos/
+            │   ├── mappers/
+            │   ├── exceptions/
+            │   ├── utils/
+            │   └── configs/
+            │
+            └── shared/                       # Cross-cutting concerns
+                ├── exceptions/
+                │   └── GlobalExceptionHandler.java
+                ├── utils/
+                └── configs/
+                    └── SecurityConfig.java
+```
+
+### Layer responsibilities
+
+| Layer | Responsibility |
+|---|---|
+| `controllers` | Exposes HTTP endpoints, handles request/response |
+| `services` | Business logic, orchestrates domain operations |
+| `repositories` | R2DBC data access, database queries |
+| `models` | Domain entities mapped to database tables |
+| `dtos` | Request and response objects — never expose models directly |
+| `mappers` | MapStruct interfaces to convert between models and DTOs |
+| `exceptions` | Module-specific exceptions |
+| `utils` | Stateless helpers specific to the module |
+| `configs` | Module-level Spring beans and configuration |
+| `shared` | Global exception handler, security config, and shared utilities |
+
+### Rules
+
+- A module must **never import** from another module's internal layers (models, repositories, etc.)
+- If two modules need to share data, they do so through **DTOs or service interfaces** in `shared`
+- All cross-cutting configuration (security, global exception handling) lives in `shared`
+- New features always get their **own module directory** — no logic is added to existing modules unless it belongs to that domain
 
 ---
 
@@ -131,7 +222,7 @@ There is no need to start any service manually; Testcontainers handles the datab
 ./mvnw clean test
 
 # Run tests and generate coverage report
-./mvnw -B clean verify
+./mvnw -B clean verify "-Dspotless.check.skip=true" "-Dcheckstyle.skip=true" "-Dpmd.skip=true"
 
 # Coverage report will be available at:
 # target/site/jacoco/index.html
@@ -187,7 +278,7 @@ This project follows [Semantic Versioning](https://semver.org/):
 To bump the version before merging to `main`:
 
 ```bash
-./mvnw versions:set "-DnewVersion=0.2.0"
+./mvnw versions:set "-DnewVersion=0.2.0" "-DgenerateBackupPoms=false"
 git add pom.xml
 git commit -m "chore: bump version to 0.2.0"
 ```
@@ -201,3 +292,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full contribution guide.
 ---
 
 > Maintained by **Sebastian** · JAC Manager API © 2026
+> 

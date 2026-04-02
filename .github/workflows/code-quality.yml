@@ -1,4 +1,4 @@
-name: Code Quality for JAC-MANAGER-API
+name: Code Quality for jac-manager-api
 
 on:
   pull_request:
