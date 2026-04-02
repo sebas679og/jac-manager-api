@@ -31,6 +31,10 @@ jobs:
         run: |
           chmod +x mvnw 2>/dev/null || true
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout 2>/dev/null)
+          if [ -z "$VERSION" ]; then
+          echo "ERROR: Could not extract version from pom.xml"
+          exit 1
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Detected version: $VERSION"
 
