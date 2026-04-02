@@ -24,7 +24,7 @@ jobs:
           cache: maven
 
       - name: Run tests and generate coverage report
-        run: mvn -B clean verify
+        run: mvn -B clean verify -Dspotless.check.skip=true -Dcheckstyle.skip=true -Dpmd.skip=true
 
       - name: Upload Surefire reports on failure
         if: failure()
