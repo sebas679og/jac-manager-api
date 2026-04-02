@@ -172,7 +172,7 @@ Version follows [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 
 ```bash
 # Set new version in pom.xml
-./mvnw versions:set "-DnewVersion=0.2.0"
+./mvnw versions:set "-DnewVersion=0.2.0" "-DgenerateBackupPoms=false"
 
 # Commit the change
 git add pom.xml
@@ -314,7 +314,7 @@ public class JacApplication {
 ./mvnw spotless:check checkstyle:check pmd:check
 
 # 3. Run tests
-./mvnw clean test
+./mvnw -B clean verify "-Dspotless.check.skip=true" "-Dcheckstyle.skip=true" "-Dpmd.skip=true"
 
 # 4. If everything passes — commit and push
 git add .

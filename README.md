@@ -131,7 +131,7 @@ There is no need to start any service manually; Testcontainers handles the datab
 ./mvnw clean test
 
 # Run tests and generate coverage report
-./mvnw -B clean verify
+./mvnw -B clean verify "-Dspotless.check.skip=true" "-Dcheckstyle.skip=true" "-Dpmd.skip=true"
 
 # Coverage report will be available at:
 # target/site/jacoco/index.html
@@ -187,7 +187,7 @@ This project follows [Semantic Versioning](https://semver.org/):
 To bump the version before merging to `main`:
 
 ```bash
-./mvnw versions:set "-DnewVersion=0.2.0"
+./mvnw versions:set "-DnewVersion=0.2.0" "-DgenerateBackupPoms=false"
 git add pom.xml
 git commit -m "chore: bump version to 0.2.0"
 ```
