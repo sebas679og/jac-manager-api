@@ -9,6 +9,7 @@ to set up your environment, follow the project conventions, and get your changes
 
 - [Prerequisites](#prerequisites)
 - [Setting Up the Local Environment](#setting-up-the-local-environment)
+- [Architecture Convention](#architecture-convention)
 - [Branch Strategy](#branch-strategy)
 - [Commit Convention](#commit-convention)
 - [Bumping the Version](#bumping-the-version)
@@ -94,6 +95,106 @@ The API should be available at `http://localhost:8080`.
 
 ---
 
+## Architecture Convention
+
+The project adopts a **Modular MVC architecture**. Every new feature must follow this structure.
+
+### Module structure
+
+Each domain feature gets its own directory under `com/api/manager/jac/` with the
+following internal layers:
+
+```
+com/api/manager/jac/
+│
+├── {module}/
+│   ├── controllers/       # HTTP endpoints
+│   ├── services/          # Business logic (interface + impl)
+│   ├── repositories/      # R2DBC data access
+│   ├── models/            # Database entities
+│   ├── dtos/              # Request and response objects
+│   ├── mappers/           # MapStruct interfaces
+│   ├── exceptions/        # Module-specific exceptions
+│   ├── utils/             # Stateless helpers
+│   └── configs/           # Module-level Spring beans
+│
+└── shared/                # Cross-cutting concerns
+    ├── exceptions/
+    │   └── GlobalExceptionHandler.java
+    ├── utils/
+    └── configs/
+        └── SecurityConfig.java
+```
+
+### Layer responsibilities
+
+| Layer | Responsibility |
+|---|---|
+| `controllers` | Exposes HTTP endpoints, handles request/response mapping |
+| `services` | Business logic — always define an interface and a separate `Impl` class |
+| `repositories` | R2DBC data access and database queries |
+| `models` | Domain entities mapped to database tables |
+| `dtos` | Request and response objects — **never expose models directly to the API** |
+| `mappers` | MapStruct interfaces to convert between models and DTOs |
+| `exceptions` | Module-specific exceptions (e.g. `UserNotFoundException`) |
+| `utils` | Stateless helper methods specific to the module |
+| `configs` | Module-level Spring beans and configuration |
+| `shared` | Global exception handler, security config, and utilities shared across modules |
+
+### Adding a new module — step by step
+
+**Example:** adding a `governance` module.
+
+#### 1. Create the directory structure
+
+```
+com/api/manager/jac/governance/
+├── controllers/
+│   └── GovernanceController.java
+├── services/
+│   ├── GovernanceService.java
+│   └── GovernanceServiceImpl.java
+├── repositories/
+│   └── GovernanceRepository.java
+├── models/
+│   └── Governance.java
+├── dtos/
+│   ├── GovernanceRequestDto.java
+│   └── GovernanceResponseDto.java
+├── mappers/
+│   └── GovernanceMapper.java
+├── exceptions/
+│   └── GovernanceNotFoundException.java
+├── utils/
+│   └── GovernanceUtils.java
+└── configs/
+    └── GovernanceConfig.java
+```
+
+#### 2. Follow the naming convention
+
+| Layer | Pattern | Example |
+|---|---|---|
+| Controller | `{Module}Controller` | `GovernanceController` |
+| Service interface | `{Module}Service` | `GovernanceService` |
+| Service implementation | `{Module}ServiceImpl` | `GovernanceServiceImpl` |
+| Repository | `{Module}Repository` | `GovernanceRepository` |
+| Model | `{Module}` | `Governance` |
+| Request DTO | `{Module}RequestDto` | `GovernanceRequestDto` |
+| Response DTO | `{Module}ResponseDto` | `GovernanceResponseDto` |
+| Mapper | `{Module}Mapper` | `GovernanceMapper` |
+| Exception | `{Module}{Reason}Exception` | `GovernanceNotFoundException` |
+
+#### 3. Rules
+
+- A module must **never import** from another module's internal layers (models, repositories, etc.)
+- Inter-module communication goes through **DTOs or service interfaces** defined in `shared`
+- All global concerns (security, global exception handling) live in `shared` — never in a module
+- Do not add unrelated logic to an existing module — create a new one instead
+- The `services` layer must always be defined as an **interface + implementation** pair
+
+---
+
 ## Branch Strategy
 
 We follow a two-level promotion flow:
@@ -115,14 +216,14 @@ chore/*  ───┘
 **Rules:**
 - Never commit directly to `dev` or `main`
 - Always branch off from the latest `dev`
-- One feature or fix per branch
+- One feature or fix per branch — one module per branch when possible
 - PRs go to `dev` first — only `dev` merges into `main`
 
 ```bash
 # Always start from dev
 git checkout dev
 git pull origin dev
-git checkout -b feature/treasury-module
+git checkout -b feature/governance-module
 ```
 
 ---
@@ -153,8 +254,10 @@ git commit -m "feat(treasury): add monthly balance calculation endpoint"
 git commit -m "fix(affiliations): correct duplicate member validation"
 git commit -m "chore: bump version to 0.2.0"
 git commit -m "test(users): add integration test for user registration"
-git commit -m "docs: update contributing guide with versioning section"
+git commit -m "docs: update contributing guide with architecture section"
 ```
+
+> Use the module name as the scope — `feat(treasury)`, `fix(users)`, `test(affiliations)`.
 
 ---
 
@@ -194,8 +297,6 @@ docker compose up -d
 
 ### With Maven only (faster for development iterations)
 
-If you want to run the app directly without rebuilding the Docker image on every change:
-
 ```bash
 # Start only the database
 docker compose up -d postgres-jac
@@ -227,13 +328,13 @@ docker compose up -d postgres-jac
 All integration tests must extend `AbstractIntegrationTest`:
 
 ```java
-class MyFeatureTest extends AbstractIntegrationTest {
+class UserControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
 
     @Test
-    void shouldDoSomething() {
+    void shouldRegisterUser() {
         // your test
     }
 }
@@ -244,6 +345,9 @@ class MyFeatureTest extends AbstractIntegrationTest {
 - Activating the `test` Spring profile
 - Configuring `WebTestClient` for reactive endpoint testing
 
+> Place integration tests mirroring the module structure:
+> `src/test/java/com/api/manager/jac/users/controllers/UserControllerTest.java`
+
 ---
 
 ## Code Quality Checks
@@ -251,8 +355,6 @@ class MyFeatureTest extends AbstractIntegrationTest {
 The project enforces three quality gates. **All must pass before opening a PR.**
 
 ### 1. Spotless — code formatting
-
-Spotless enforces Google Java Format across the entire codebase.
 
 ```bash
 # Auto-fix all formatting issues — run this before every commit
@@ -265,8 +367,6 @@ Spotless enforces Google Java Format across the entire codebase.
 > Always run `spotless:apply` before `git commit` to avoid CI failures.
 
 ### 2. Checkstyle — code style
-
-Checkstyle validates code style rules based on the Google style guide.
 
 ```bash
 ./mvnw checkstyle:check
@@ -282,14 +382,11 @@ Common issues and fixes:
 
 ### 3. PMD — static analysis
 
-PMD detects common programming mistakes and bad practices.
-
 ```bash
 ./mvnw pmd:check
 ```
 
-If PMD flags a false positive on a valid pattern, suppress it on that specific element only —
-never disable the rule globally:
+If PMD flags a false positive on a valid pattern, suppress it on that specific element only:
 
 ```java
 @SuppressWarnings("PMD.UseUtilityClass")
@@ -297,6 +394,8 @@ public class JacApplication {
     // ...
 }
 ```
+
+Never disable a PMD rule globally — suppress it only where it is a confirmed false positive.
 
 ### Run all checks at once
 
@@ -318,7 +417,7 @@ public class JacApplication {
 
 # 4. If everything passes — commit and push
 git add .
-git commit -m "feat(scope): your change description"
+git commit -m "feat(module): your change description"
 git push origin feature/your-branch
 ```
 
@@ -330,7 +429,7 @@ git push origin feature/your-branch
 2. Push your branch to origin
 3. Open a PR from your branch **to `dev`** — never directly to `main`
 4. Fill in the PR description with:
-    - What changed and why
+    - What module was added or modified
     - Type of change (`feat`, `fix`, `chore`, etc.)
     - Version bump applied (if any)
 5. Wait for CI to pass — both workflows must be green:
