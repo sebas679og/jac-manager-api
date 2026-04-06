@@ -153,6 +153,32 @@ cd jac-manager-api
 
 ---
 
+## Docker Image
+
+The application is available as a Docker image on Docker Hub. You can pull and run it by providing the required environment variables described below.
+
+```bash
+# Pull the latest image from Docker Hub
+docker pull sebas679og/jac-manager-api:latest
+```
+
+```bash
+# Run the container with the required environment variables
+docker run -d \
+  --name jac-manager-api \
+  -p 8080:8080 \
+  -e JAC_DATASOURCE_URL=jdbc:postgresql://host:5432/jac_db \
+  -e JAC_DATASOURCE_USERNAME=your_username \
+  -e JAC_DATASOURCE_PASSWORD=your_password \
+  -e JAC_LEVEL_LOGIN=WARN \
+  -e JAC_LEVEL_ROOT=INFO \
+  sebas679og/jac-manager-api:latest
+```
+
+> 🐳 Full image documentation available on [Docker Hub](https://hub.docker.com/r/sebas679og/jac-manager-api).
+
+---
+
 ## Environment Configuration
 
 ### 1. Create your local `.env` file
